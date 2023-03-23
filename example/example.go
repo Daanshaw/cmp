@@ -12,6 +12,7 @@ import (
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 	"github.com/taurusgroup/multi-party-sig/protocols/example"
 	"sync"
+	"time"
 )
 
 func XOR(id party.ID, ids party.IDSlice, n *test.Network) error {
@@ -191,6 +192,9 @@ func main() {
 	net := test.NewNetwork(ids)
 
 	var wg sync.WaitGroup
+
+	startTime := time.Now()
+
 	for _, id := range ids {
 		wg.Add(1)
 		go func(id party.ID) {
@@ -202,4 +206,7 @@ func main() {
 		}(id)
 	}
 	wg.Wait()
+
+	elapsed := time.Since(startTime)
+	fmt.Printf("Execution time: %s (in seconds: %.2f, in nanoseconds: %d)\n", elapsed, elapsed.Seconds(), elapsed.Nanoseconds())
 }
