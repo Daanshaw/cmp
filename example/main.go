@@ -163,6 +163,7 @@ func All(id party.ID, ids party.IDSlice, threshold int, message []byte, n *test.
 }
 
 func main() {
+
 	var numParties, threshold int
 	fmt.Print("Enter the number of parties: ")
 	_, err := fmt.Scanln(&numParties)
