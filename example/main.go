@@ -12,7 +12,6 @@ import (
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 	"github.com/taurusgroup/multi-party-sig/protocols/example"
 	"sync"
-	"time"
 )
 
 func XOR(id party.ID, ids party.IDSlice, n *test.Network) error {
@@ -164,38 +163,13 @@ func All(id party.ID, ids party.IDSlice, threshold int, message []byte, n *test.
 
 func main() {
 
-	var numParties, threshold int
-	fmt.Print("Enter the number of parties: ")
-	_, err := fmt.Scanln(&numParties)
-	if err != nil {
-		fmt.Println("Invalid input for the number of parties")
-		return
-	}
-
-	fmt.Print("Enter the threshold: ")
-	_, err = fmt.Scanln(&threshold)
-	if err != nil {
-		fmt.Println("Invalid input for the threshold")
-		return
-	}
-
-	if threshold >= numParties {
-		fmt.Println("Threshold must be less than the number of parties")
-		return
-	}
-
-	ids := make(party.IDSlice, numParties)
-	for i := 0; i < numParties; i++ {
-		ids[i] = party.ID(fmt.Sprintf("p%d", i+1))
-	}
-
+	ids := party.IDSlice{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"}
+	threshold := 10
 	messageToSign := []byte("hello")
+
 	net := test.NewNetwork(ids)
 
 	var wg sync.WaitGroup
-
-	startTime := time.Now()
-
 	for _, id := range ids {
 		wg.Add(1)
 		go func(id party.ID) {
@@ -207,7 +181,4 @@ func main() {
 		}(id)
 	}
 	wg.Wait()
-
-	elapsed := time.Since(startTime)
-	fmt.Printf("Execution time: %s (in seconds: %.2f, in nanoseconds: %d)\n", elapsed, elapsed.Seconds(), elapsed.Nanoseconds())
 }

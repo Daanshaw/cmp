@@ -10,36 +10,23 @@ import (
 )
 
 func BenchmarkProtocol(b *testing.B) {
-	numParties := 3 // Set the number of parties
-	threshold := 2  // Set the threshold
+	ids := party.IDSlice{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "v"}
+	threshold := 15
+	messageToSign := []byte("hello")
 
-	// Create a slice of party IDs with the specified number of parties
-	ids := make(party.IDSlice, numParties)
-	for i := 0; i < numParties; i++ {
-		ids[i] = party.ID(fmt.Sprintf("p%d", i+1))
+	net := test.NewNetwork(ids)
+
+	var wg sync.WaitGroup
+	for _, id := range ids {
+		wg.Add(1)
+		go func(id party.ID) {
+			pl := pool.NewPool(0)
+			defer pl.TearDown()
+			if err := All(id, ids, threshold, messageToSign, net, &wg, pl); err != nil {
+				fmt.Println(err)
+			}
+		}(id)
 	}
-
-	messageToSign := []byte("hello") // Define the message to be signed
-	net := test.NewNetwork(ids)      // Create a new test network with the given party IDs
-
-	var wg sync.WaitGroup // Create a WaitGroup to synchronize the goroutines
-
-	b.ResetTimer() // Reset the benchmark timer to ignore setup time
-	for n := 0; n < b.N; n++ {
-
-		// Iterate through the party IDs and start a new goroutine for each party
-		for _, id := range ids {
-			wg.Add(1) // Increment the WaitGroup counter
-			go func(id party.ID) {
-				pl := pool.NewPool(0) // Create a new memory pool
-				defer pl.TearDown()   // Ensure that the memory pool is cleaned up after the function returns
-				if err := All(id, ids, threshold, messageToSign, net, &wg, pl); err != nil {
-					b.Error(err) // Report any errors that occur during the benchmark
-				}
-			}(id)
-		}
-		wg.Wait() // Wait for all goroutines to complete
-
-	}
+	wg.Wait()
 
 }
