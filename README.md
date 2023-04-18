@@ -2,6 +2,12 @@
 
 This repository contains a modified version of the multi-party threshold signing implementation in Go, originally developed by Adrian Hamelink and Taurus SA, for benchmarking purposes.
 
+How to run it?
+
+cmp-master/example contains the benchmark which can be run by using either default benchmarking Go commands or simply by running the functions in benchmark-test.go.
+
+Number of parties can be changed by adding characters to party.IDSlice and threshold by just changing the threshold variable.
+
 The original implementation supports:
 
 - **ECDSA**: Using the "CGGMP" protocol by Canetti et al. for threshold ECDSA signing. The implementation includes both the 4-round "online" and the 7-round "presigning" protocols from the paper. The latter also supports identifiable aborts. Implementation details are documented in `docs/Threshold.pdf`. The original implementation supports ECDSA with secp256k1, with other curves planned for the future.
@@ -14,3 +20,7 @@ Use this modified implementation at your own risk, as the original project needs
 ## License
 
 This modified version is based on the code which is copyright (c) Adrian Hamelink and Taurus SA, 2021, and is distributed under the Apache 2.0 license. The original license and copyright notice can be found in the `LICENSE` file in this repository.
+
+Files added/changed to the original repo: 
+benchmark_test.go
+main.go
